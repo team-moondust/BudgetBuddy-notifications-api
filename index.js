@@ -24,6 +24,7 @@ const subscriptions = [];
 app.post("/subscribe", (req, res) => {
   const subscription = req.body;
   subscriptions.push(subscription);
+  console.log("Added", subscription);
   res.status(201).json({ message: "Subscribed" });
 });
 
@@ -36,7 +37,8 @@ app.get("/push", async (req, res) => {
 
   for (const sub of subscriptions) {
     try {
-      await webPush.sendNotification(sub, payload);
+      const res = await webPush.sendNotification(sub, payload);
+      console.log(res);
     } catch (err) {
       console.error("Push failed", err);
     }
