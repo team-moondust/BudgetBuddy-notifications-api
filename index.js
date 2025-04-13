@@ -29,7 +29,7 @@ app.post("/subscribe", (req, res) => {
 });
 
 app.post("/push", async (req, res) => {
-  const { email, title, body, imageId } = req.body;
+  const { email, title, body, imageId, petChoice } = req.body;
   const sub = subscriptions[email];
 
   if (!sub) {
@@ -41,7 +41,8 @@ app.post("/push", async (req, res) => {
   const payload = JSON.stringify({
     title: title || "BudgetBuddy",
     body: body || "New message!",
-    image: imageId ?? 5,
+    image: imageId || 0,
+    petChoice: petChoice || 0,
   });
 
   try {
