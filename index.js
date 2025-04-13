@@ -19,11 +19,11 @@ console.log("VAPID Public Key:", process.env.VAPID_PUBLIC_KEY);
 app.use(cors());
 app.use(bodyParser.json());
 
-const subscriptions = [];
+const subscriptions = {};
 
 app.post("/subscribe", (req, res) => {
-  const subscription = req.body;
-  subscriptions.push(subscription);
+  const { subscription, email } = req.body;
+  subscriptions[email] = subscription;
   console.log("Added", subscription);
   res.status(201).json({ message: "Subscribed" });
 });
