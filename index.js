@@ -28,23 +28,30 @@ app.post("/subscribe", (req, res) => {
   res.status(201).json({ message: "Subscribed" });
 });
 
-// Send a test push
-app.get("/push", async (req, res) => {
-  const payload = JSON.stringify({
-    title: "Server says hi!",
-    body: "This is a push from the backend.",
-  });
+app.post("/push", async (req, res) => {
+  const { email, title, body, imageId } = req.body;
+  const sub = subscriptions[email];
 
-  for (const sub of subscriptions) {
-    try {
-      const res = await webPush.sendNotification(sub, payload);
-      console.log(res);
-    } catch (err) {
-      console.error("Push failed", err);
-    }
+  if (!sub) {
+    return res
+      .status(404)
+      .json({ error: "Subscription not found for given email" });
   }
 
-  res.send("Push triggered");
+  const payload = JSON.stringify({
+    title: title || "BudgetBuddy",
+    body: body || "New message!",
+    image: imageId ?? 5,
+  });
+
+  try {
+    const response = await webPush.sendNotification(sub, payload);
+    console.log("Push sent:", response);
+    res.status(200).json({ message: "Push sent successfully" });
+  } catch (err) {
+    console.error("Push failed", err);
+    res.status(500).json({ error: "Failed to send push" });
+  }
 });
 
 app.listen(port, () => {
