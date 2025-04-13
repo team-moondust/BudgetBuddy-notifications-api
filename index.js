@@ -24,12 +24,13 @@ const subscriptions = {};
 app.post("/subscribe", (req, res) => {
   const { subscription, email } = req.body;
   subscriptions[email] = subscription;
-  console.log("Added", subscription);
+  console.log("Added", subscription, "for", email);
   res.status(201).json({ message: "Subscribed" });
 });
 
 app.post("/push", async (req, res) => {
   const { email, title, body, imageId, petChoice } = req.body;
+  console.log(Object.keys(subscriptions));
   const sub = subscriptions[email];
 
   if (!sub) {
